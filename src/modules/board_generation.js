@@ -9,8 +9,10 @@ const BOARD_DIMENSION = 3 //Specifies the amount of rows and columns in the boar
 
 function initialiseBoard(dimension){
     let gameBoard = []
+    //for each row in the grid add a new nested list
     for (let i = 0; i < dimension; i++){
         gameBoard.push([])
+        //for each column in row i, add an integer
         for (let j = 0; j <dimension; j++){
             gameBoard[i].push(j+1+i*dimension)
         }
