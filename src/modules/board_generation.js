@@ -5,10 +5,10 @@ Caleb Eason
 Module to generate and display a 9 by 9 minesweeper game board*/
 
 //Variables and Constants
-const BOARD_DIMENSION = 2 //Specifies the amount of rows and columns in the board, hardcoded
+const BOARD_DIMENSION = 3 //Specifies the amount of rows and columns in the board, hardcoded
+var gameBoard = []  //Global Variable for holding cell information
 
 function initialiseBoard(dimension){
-    let gameBoard = []
     //iterate through each row
     for (let i = 0; i < dimension; i++){
         //iterate thorugh each column for row i
@@ -21,5 +21,5 @@ function initialiseBoard(dimension){
     return gameBoard
 }
 
-const gameBoard = initialiseBoard(BOARD_DIMENSION)
+gameBoard = initialiseBoard(BOARD_DIMENSION)
 console.log(gameBoard)
