@@ -15,7 +15,7 @@ function initialiseBoard(dimension){
         for (let j = 0; j < dimension; j++){
             //Creates an object for each cell in the grid
             //x and y refer to the graphical position of each cell, state can be 'covered', 'uncovered' or flagged'
-            gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0})
+            gameBoard.push({x:j+1,y:i+1,containsMine:false,state:'covered',minesNearby:0})
         }
     }
     return gameBoard

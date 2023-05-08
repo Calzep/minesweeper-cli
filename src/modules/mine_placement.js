@@ -13,13 +13,13 @@ const MAX_MINES = 5
 
 var gameBoard = [   //global variable, taken form board gen module
     { x: 1, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 1, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 1, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
     { x: 2, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 2, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 2, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
     { x: 3, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
+    { x: 1, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
+    { x: 2, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
     { x: 3, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
+    { x: 1, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
+    { x: 2, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
     { x: 3, y: 3, containsMine: false, state: 'covered', minesNearby: 0 }
   ]
 
