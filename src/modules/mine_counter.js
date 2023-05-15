@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game, mine counter module
-version 0.0, 04/05/2023
+version 1.0, 15/05/2023
 Caleb Eason
 
 Module to count how many mines neighbour a cell and save the value to the cell object*/
