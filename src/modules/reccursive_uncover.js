@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game, reccursive cell uncover modlue
-version 1.0, 15/05/2023
+version 1.0, 16/05/2023
 Caleb Eason
 
 Module for reccursively uncovering cells if an uncovered cell has no mines nearby*/
