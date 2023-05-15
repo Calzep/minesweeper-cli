@@ -96,6 +96,7 @@ function uncoverCell(x_input,y_input){
                 gameBoard[arrIndex].display = gameBoard[arrIndex].minesNearby
             } else {
                 gameBoard[arrIndex].display = '░'
+                console.log('call reccursive uncover function')
             }
             console.log('call check_for_mine module')
         } 
