@@ -2,7 +2,7 @@
 version 1.1, 04/05/2023
 Caleb Eason
 
-Module to generate and display a 9 by 9 minesweeper game board*/
+Module to generate a variable size minesweeper game board*/
 
 //Variables and Constants
 const BOARD_DIMENSION = 3 //Specifies the amount of rows and columns in the board, hardcoded
