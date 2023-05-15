@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game, board generation module
-version 1.0, 04/05/2023
+version 1.1, 04/05/2023
 Caleb Eason
 
 Module to generate and display a 9 by 9 minesweeper game board*/
@@ -15,7 +15,7 @@ function initialiseBoard(dimension){
         for (let j = 0; j < dimension; j++){
             //Creates an object for each cell in the grid
             //x and y refer to the graphical position of each cell, state can be 'covered', 'uncovered' or flagged'
-            gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0})
+            gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0,display:' '})
         }
     }
     return gameBoard

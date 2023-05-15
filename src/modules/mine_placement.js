@@ -12,16 +12,79 @@ const MIN_MINES = 2 //Hardcoded values for the mimimum and maximum amount of min
 const MAX_MINES = 5
 
 var gameBoard = [   //global variable, taken form board gen module
-    { x: 1, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 1, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 1, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 2, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 2, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 2, y: 3, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 3, y: 1, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 3, y: 2, containsMine: false, state: 'covered', minesNearby: 0 },
-    { x: 3, y: 3, containsMine: false, state: 'covered', minesNearby: 0 }
-  ]
+{
+    x: 1,
+    y: 1,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 1,
+    y: 2,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 1,
+    y: 3,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 2,
+    y: 1,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 2,
+    y: 2,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 2,
+    y: 3,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 3,
+    y: 1,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 3,
+    y: 2,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  },
+  {
+    x: 3,
+    y: 3,
+    containsMine: false,
+    state: 'covered',
+    minesNearby: 0,
+    display: ' '
+  }
+]
 
 
 function placeMines(min,max,dimension){
