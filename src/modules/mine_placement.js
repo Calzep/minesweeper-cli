@@ -46,8 +46,7 @@ function placeMines(min,max,dimension){
             arrIndex = gameBoard.map((element, index) => {
                 if (element.x == x_candidate && element.y == y_candidate){
                     return index
-                }
-            }).filter(element => element >=0)
+                }}).filter(element => element >=0)
             //console.log('matched cell',gameBoard[arrIndex],'\n')   //*for debugging
 
             //Checks if the matched cell contains a mine.  If it doesn't, a mine is placed and the loop is broken

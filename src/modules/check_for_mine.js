@@ -20,15 +20,14 @@ function checkForMine(x_input,y_input){
     arrIndex = gameBoard.map((element, index) => {
         if (element.x == x_input && element.y == y_input){
             return index
-        }
-    }).filter(element => element >=0)
+        }}).filter(element => element >=0)
     
     //check if the returned result is not undefined, 
     //if true return the value of contains mine for the selected cell
     if (Object.keys(arrIndex).length !== 0){
         return gameBoard[arrIndex].containsMine
     } else {
-        return 'The value entered is or outside of the game board!'
+        return 'The value entered is outside of the game board!'
     }
     
 }

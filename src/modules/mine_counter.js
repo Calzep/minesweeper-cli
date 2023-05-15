@@ -29,8 +29,7 @@ function countNearbyMines () {
                 let arrIndex = gameBoard.map((element, index) => {
                     if (element.x == cx+j && element.y == cy+k){
                         return index
-                    }
-                    }).filter(element => element >=0)
+                    }}).filter(element => element >=0)
                 //console.log(arrIndex)                       //*for debugging
                 //console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
                 if (Object.keys(arrIndex).length !== 0){
