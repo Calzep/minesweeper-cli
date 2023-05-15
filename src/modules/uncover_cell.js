@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game, uncover cell module
-version 1.0, 15/05/2023
+version 2.0, 15/05/2023
 Caleb Eason
 
 Module for uncovering cells on the game board thourgh user interaction*/

@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game, check for mine module
-version 1.0, 15/05/2023
+version 2, 15/05/2023
 Caleb Eason
 
 Module to check if a cell contains a mine and displays the result*/
