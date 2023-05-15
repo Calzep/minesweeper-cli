@@ -208,7 +208,8 @@ var gameBoard = [   //global variable, taken form board gen module
 ]
 
 function displayBoard(){
-    console.clear() //clear space in the console
+  //clear space in the console beacuse console.clear() doesn't work in node
+    console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n') 
 
     //Create X axis key
     let xkey = '     1'
@@ -227,7 +228,7 @@ function displayBoard(){
     startRow += '╗'
     console.log(startRow)
 
-    //Create each row of the grid
+    //Create each row of the grid and y axis key
     for (let i = 1; i < BOARD_DIMENSION; i++){
 
         //Create the left and right cell boarders
