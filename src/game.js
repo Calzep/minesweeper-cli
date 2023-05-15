@@ -1,9 +1,9 @@
 /* SDV503 Minesweeper game
-version A.1, 16/05/2023
+version A.2, 16/05/2023
 Caleb Eason*/
 
 //ANCHOR Variables and Constants
-var boardDimension = 3 //Global variable Specifing the amount of rows and columns in the board
+var boardDimension = 5 //Global variable Specifing the amount of rows and columns in the board
 var gameBoard = []  //Global Variable for holding cell information
 
 //Global values for the mimimum and maximum amount of mines that can generate
@@ -196,6 +196,7 @@ function uncoverCell(x_input,y_input){
                 gameBoard[arrIndex].display = gameBoard[arrIndex].minesNearby
             } else {
                 gameBoard[arrIndex].display = uncovered_disp
+                recursiveUncover(x_input,y_input)
             }
             checkForMine(x_input,y_input)
         } 
@@ -205,6 +206,22 @@ function uncoverCell(x_input,y_input){
     }
 }
 
+//ANCHOR Recursive Uncover
+function recursiveUncover(x,y){
+    for (var i = -1; i <= 1; i++){
+        for (let j = -1; j <= 1; j++){
+            let arrIndex = gameBoard.map((element, index) => {
+                if (element.x == x+i && element.y == y+j){
+                    return index
+                }}).filter(element => element >=0)
+            //console.log(arrIndex)                       //*for debugging
+            //console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
+            if (Object.keys(arrIndex).length !== 0){
+                uncoverCell(x+i,y+j)
+            }
+        }
+    }
+}
 //ANCHOR Toggle Flag
 function toggleFlag(x_input,y_input){
     arrIndex = gameBoard.map((element, index) => {
@@ -261,12 +278,16 @@ function root(){
     //ANCHOR Gameplay loop
     gameplay: while (true){
         displayBoard()      //TODO - ADD USER INPUT HERE
-        //console.log(gameBoard)    //*for debugging
-        break
+        console.log(gameBoard)    //*for debugging
         console.log('input stuff here')
-        //uncoverCell(x,y)
+        let x = 3
+        let y = 3
+        uncoverCell(x,y)
+        displayBoard()
+        //console.log(gameBoard)    //*for debugging
         //toggleFlag(x,y)
         //checkWinCondition()
+        break
     }
     //TODO - ADD END GAME LOGIC
 }
