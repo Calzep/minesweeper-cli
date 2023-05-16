@@ -191,7 +191,7 @@ function uncoverCell(x_input,y_input){
         //check the stae of the cell, toggle between covered and flagged
         //if the state is uncovered, then input will do nothing
         if(gameBoard[arrIndex].state === 'covered'){
-            gameBoard[arrIndex].state = 'uncovered' //TODO - RECURSSIVE UNCOVERING
+            gameBoard[arrIndex].state = 'uncovered'
             if (gameBoard[arrIndex].minesNearby > 0){
                 gameBoard[arrIndex].display = gameBoard[arrIndex].minesNearby
             } else {
