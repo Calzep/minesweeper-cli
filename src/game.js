@@ -3,6 +3,9 @@ version A.2, 16/05/2023
 Caleb Eason*/
 
 //ANCHOR Variables and Constants
+const readline = require('node:readline/promises');
+const {stdin: input, stdout: output} = require('node:process');
+
 var boardDimension = 5 //Global variable Specifing the amount of rows and columns in the board
 var gameBoard = []  //Global Variable for holding cell information
 
@@ -251,40 +254,70 @@ function toggleFlag(x_input,y_input){
 //ANCHOR Check Win Conditions
 function checkWinCondition(){
     let gamefinished = true
+    //Iterate through each cell to check if it either contains a mine or has been uncovered
     for (let i = 0; i < gameBoard.length; i++){
+        //If at any point a cell is found that is covered and does not contain a mine the loop will break
         if(!(gameBoard[i].state === 'uncovered' || gameBoard[i].containsMine === true)){
             gamefinished = false
             console.log('win conditions not met')   //*for debugging
             break
         }
     }
+    //If the for loop is not broken then the game is won
     if (gamefinished === true){
         console.log('game won, ending game')    //TODO - LOGIC FOR ENDING GAME NEEDED
     }
 }
 
 //ANCHOR User Input
+const getInput = async (prompt = '>') => {
+    //Get user input through the readline module
+    const rl = readline.createInterface({input,output});
+    let userInput = await rl.question(prompt);
+    rl.close();
+    
+    return userInput;
+}
 
+//ANCHOR Begin Game
+async function begin(){
+    console.log(`
+    To begin the game, press ENTER
+    To change game settings, type 'settings' or 's'
+    To display instructions, type 'help' or 'h'\n`);
+    //Retrieve user input with getInput funciton
+    let userInput = await getInput();
 
+    if (userInput.toLowerCase() == ''){
+        console.log('Starting Game')    //*for debugging
+    }
+    else if (userInput.toLowerCase() === 'settings' || userInput.toLowerCase() === 's'){
+        console.log('settings opened')  //*for debugging
+    }
+    else if (userInput.toLowerCase() === 'help' || userInput.toLowerCase() === 'h'){
+        console.log('displaying help')  //*for debugging
+    } else {
+        console.log('\nInvalid input!')
+        await begin()
+    }
+}
 
 //ANCHOR Root Loop
-function root(){
+async function root (){
     //ANCHOR Initialisation
-    gameBoard = initialiseBoard()
-    placeMines()
-    countNearbyMines()
-    console.log('welcome stuff')    //TODO - ADD WELCOME LOGIC, COMMANDS, CUSTOMISATION
+    console.log('\n\nWelcome to Minesweeper');
+    await begin();
+    gameBoard = initialiseBoard();
+    placeMines();
+    countNearbyMines();
+    console.log('welcome stuff');    //TODO - ADD WELCOME LOGIC, COMMANDS, CUSTOMISATION
     
     //ANCHOR Gameplay loop
     gameplay: while (true){
-        displayBoard()      //TODO - ADD USER INPUT HERE
-        console.log(gameBoard)    //*for debugging
-        console.log('input stuff here')
-        let x = 3
-        let y = 3
-        uncoverCell(x,y)
-        displayBoard()
+        displayBoard();     //TODO - ADD USER INPUT HERE
         //console.log(gameBoard)    //*for debugging
+        console.log('input stuff here');
+        //uncoverCell(x,y)
         //toggleFlag(x,y)
         //checkWinCondition()
         break

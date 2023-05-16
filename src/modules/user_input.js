@@ -9,20 +9,15 @@ const {stdin: input, stdout: output} = require('node:process');
 
 
 
-const askQuestion = async (question) => {
+const getInput = async (question) => {
     const rl = readline.createInterface({input,output});
-    let userInput = await rl.question(question)
-    rl.close()
-
-    if(true){
-        console.log(userInput)
-    } else {
-        console.log('error')
-        askQuestion(question)
-    }
-    return userInput
+    let userInput = await rl.question(question);
+    rl.close();
+    if(true){return userInput;}
+    
 }
 
 (async () => {
-    console.log(askQuestion("Enter an X value\n"))
+    console.log(getInput("Enter an X value\n"));
+    console.log('CRanatium')
 })();
