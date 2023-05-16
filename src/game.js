@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game
-version A.2, 16/05/2023
+version A.3, 16/05/2023
 Caleb Eason*/
 
 //ANCHOR Variables and Constants
@@ -14,10 +14,12 @@ var minMines = 2
 var maxMines = 5
 
 //Global variables for the characters used to represent items on the board.
-var covered_disp = ' '
-var uncovered_disp = '░'
-var flagged_disp = '?'
-var mine_disp = 'X'
+var coveredDisp = ' '
+var uncoveredDisp = '░'
+var flaggedDisp = '?'
+var mineDisp = 'X'
+
+var showHelpText = true
 
 //ANCHOR Functions
 
@@ -29,7 +31,7 @@ function initialiseBoard(){
         for (let j = 0; j < boardDimension; j++){
             //Creates an object for each cell in the grid
             //x and y refer to the graphical position of each cell, state can be 'covered', 'uncovered' or flagged'
-            gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0,display:covered_disp})
+            gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0,display:coveredDisp})
         }
     }
     return gameBoard
@@ -173,7 +175,7 @@ function checkForMine(x_input,y_input){
     if (Object.keys(arrIndex).length !== 0){
         if (gameBoard[arrIndex].containsMine === true){
             console.log('game lost, ending game')   //TODO - LOGIC FOR BREAKING LOOP NEEDED
-            gameBoard[arrIndex].display = mine_disp
+            gameBoard[arrIndex].display = mineDisp
         }
     } else {
         console.log('The value entered is outside of the game board!')  //REVIEW - This behaviour may be duplicated
@@ -198,7 +200,7 @@ function uncoverCell(x_input,y_input){
             if (gameBoard[arrIndex].minesNearby > 0){
                 gameBoard[arrIndex].display = gameBoard[arrIndex].minesNearby
             } else {
-                gameBoard[arrIndex].display = uncovered_disp
+                gameBoard[arrIndex].display = uncoveredDisp
                 recursiveUncover(x_input,y_input)
             }
             checkForMine(x_input,y_input)
@@ -239,11 +241,11 @@ function toggleFlag(x_input,y_input){
         //if the state is uncovered, then input will do nothing
         if (gameBoard[arrIndex].state === 'covered'){
             gameBoard[arrIndex].state = 'flagged'
-            gameBoard[arrIndex].display = flagged_disp
+            gameBoard[arrIndex].display = flaggedDisp
         } 
         else if (gameBoard[arrIndex].state === 'flagged'){
             gameBoard[arrIndex].state = 'covered'
-            gameBoard[arrIndex].display = covered_disp
+            gameBoard[arrIndex].display = coveredDisp
         }
     } else {
         //error trapping
@@ -279,6 +281,103 @@ const getInput = async (prompt = '>') => {
     return userInput;
 }
 
+//ANCHOR Game Settings  //TODO - This is broken.  Selection doesn't work
+async function settings(){
+    console.log('|--- Game Settings ---|');  //*for debugging
+    console.log(`
+    To change the board size, type 'change_size'
+    To change the amount of mines on the board, type 'change_mine_count'
+    To customise the game's iconography, type 'change_icons'
+    
+    To exit this menu, type 'exit' or 'e'`);
+    let userInput = await getInput();
+    
+    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'e'){}
+    else if (userInput.toLowerCase() === 'change_size'){
+        await (async function changeSize(){
+            let userInput = await getInput('Enter the new board dimension\n');
+            if (typeof userInput == 'number' && userInput > 0){
+                boardDimension = userInput
+                await settings()
+            } else {
+                console.log('Invalid input, input must be a number greater than 0!')
+                await changeSize
+            }
+        })
+    }
+    else if (userInput.toLowerCase() === 'change_mine_count'){
+        await (async function changeMinMines(){
+            let userInput = await getInput('Enter the mimimum number of mines the game should generate\n');
+            if (typeof userInput == 'number' && userInput > 0){
+                minMines = userInput
+                await settings()
+            } else {
+                console.log('Invalid input, input must be a number greater than 0!')
+                await changeMinMines()
+            }
+        })
+        await (async function changeMaxMines(){
+            let userInput = await getInput('Enter the maximum number of mines the game should generate\n');
+            if (typeof userInput == 'number' && userInput > minMines && userInput < boardDimension){
+                maxMines = userInput
+                await settings()
+            } else if (maxMines < minMines) {
+                console.log(`Invalid input, the maximum amount of mines can not be less than the mimimum (${minMines})!`)
+                await changeMaxMines()
+            } else if (maxMines >= boardDimension**2) {
+                console.log(`Invalid input, the maximum amount of mines can not be greater than or eqaul to the amount of cells on the board (${boardDimension**2})!`)
+                await changeMaxMines()
+            } else {
+                console.log('Invalid input, input must be a number greater than 0!')
+                await changeMinMines()
+            }
+        })
+    }
+    else if (userInput.toLowerCase() === 'change_icons'){
+        await (async function changeIcon1(){
+            let userInput = await getInput('Enter the icon to represent covered cells\n');
+            if (userInput.length() === 1){
+                coveredDisp = userInput
+            } else {
+                console.log('Invalid input, input must be exactly 1 character in length!')
+                await changeIcon1()
+            }
+        })
+        await (async function changeIcon2(){
+            let userInput = await getInput('Enter the icon to represent uncovered cells\n');
+            if (userInput.length() === 1){
+                uncoveredDisp = userInput
+            } else {
+                console.log('Invalid input, input must be exactly 1 character in length!')
+                await changeIcon2()
+            }
+        })
+        await (async function changeIcon3(){
+            let userInput = await getInput('Enter the icon to represent flagged cells\n');
+            if (userInput.length() === 1){
+                flaggedDisp = userInput
+            } else {
+                console.log('Invalid input, input must be exactly 1 character in length!')
+                await changeIcon3()
+            }
+        })
+        await (async function changeIcon4(){
+            let userInput = await getInput('Enter the icon to represent a mine\n');
+            if (userInput.length() === 1){
+                mineDisp = userInput
+                await changeIcon4()
+            } else {
+                console.log('Invalid input, input must be exactly 1 character in length!')
+            }
+        })
+        await settings()
+    } else {
+        console.log('Invalid input!')
+        await settings()
+    }
+
+}
+
 //ANCHOR Begin Game
 async function begin(){
     console.log(`
@@ -289,10 +388,13 @@ async function begin(){
     let userInput = await getInput();
 
     if (userInput.toLowerCase() == ''){
-        console.log('Starting Game')    //*for debugging
+        //console.log('Starting Game')    //*for debugging
     }
     else if (userInput.toLowerCase() === 'settings' || userInput.toLowerCase() === 's'){
-        console.log('settings opened')  //*for debugging
+        //open the settings menu from the settings function
+        await settings()
+        await begin()
+
     }
     else if (userInput.toLowerCase() === 'help' || userInput.toLowerCase() === 'h'){
         console.log('displaying help')  //*for debugging
