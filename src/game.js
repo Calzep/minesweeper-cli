@@ -281,9 +281,8 @@ const getInput = async (prompt = '>') => {
     return userInput;
 }
 
-//ANCHOR Game Settings  //TODO - This is broken.  Selection doesn't work
+//ANCHOR Game Settings
 async function settings(){
-    console.log('|--- Game Settings ---|');  //*for debugging
     console.log(`
     To change the board size, type 'change_size'
     To change the amount of mines on the board, type 'change_mine_count'
@@ -292,87 +291,121 @@ async function settings(){
     To exit this menu, type 'exit' or 'e'`);
     let userInput = await getInput();
     
-    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'e'){}
+    if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'e'){
+        if (boardDimension**2 <= maxMines){
+            console.log(`\n
+            Warning: the game board is too small to accomodate the current mine count settings!
+            To continue, you will need to reduce the mine count, or increase the board size!`)
+            await settings()
+        }
+        else{console.log('\n|--- Main Menu ---|')}
+    }
     else if (userInput.toLowerCase() === 'change_size'){
-        await (async function changeSize(){
+        async function changeSize(){
             let userInput = await getInput('Enter the new board dimension\n');
-            if (typeof userInput == 'number' && userInput > 0){
+            if (userInput > 0 && userInput**2 >maxMines){
                 boardDimension = userInput
+                console.log('\nChanged the board size to',boardDimension)
                 await settings()
-            } else {
-                console.log('Invalid input, input must be a number greater than 0!')
-                await changeSize
             }
-        })
+            else if (userInput**2 <= maxMines){
+                boardDimension = userInput
+                console.log(`\nChanged the board size to ${boardDimension}
+
+                Warning: the game board is now too small to accomodate the current mine count settings!
+                To continue, you will need to reduce the mine count!`)
+                await settings()
+            }else {
+                console.log('\nInvalid input, input must be a number greater than 0!\n')
+                await changeSize()
+            }
+        }
+        await changeSize()
     }
     else if (userInput.toLowerCase() === 'change_mine_count'){
-        await (async function changeMinMines(){
+        async function changeMinMines(){
             let userInput = await getInput('Enter the mimimum number of mines the game should generate\n');
-            if (typeof userInput == 'number' && userInput > 0){
+            if (userInput > 0 && userInput < boardDimension**2){
                 minMines = userInput
-                await settings()
-            } else {
-                console.log('Invalid input, input must be a number greater than 0!')
+                console.log('\nChanged the minimum number of mines generated to',minMines,'\n')
+            } 
+            else if (userInput >= boardDimension**2) {
+                console.log(`Invalid input, the minimum amount of mines can not be greater than or eqaul to the amount of cells on the board (${boardDimension**2})!\n`)
+                await changeMinMines()
+            }else {
+                console.log('Invalid input, input must be a number greater than 0!\n')
                 await changeMinMines()
             }
-        })
-        await (async function changeMaxMines(){
+        }
+        await changeMinMines()
+        async function changeMaxMines(){
             let userInput = await getInput('Enter the maximum number of mines the game should generate\n');
-            if (typeof userInput == 'number' && userInput > minMines && userInput < boardDimension){
+            if (userInput >= minMines && userInput < boardDimension**2){
                 maxMines = userInput
+                console.log('\nChanged the maximum number of mines generated to',maxMines)
                 await settings()
-            } else if (maxMines < minMines) {
-                console.log(`Invalid input, the maximum amount of mines can not be less than the mimimum (${minMines})!`)
+            } else if (userInput < minMines) {
+                console.log(`Invalid input, the maximum amount of mines can not be less than the mimimum (${minMines})!\n`)
                 await changeMaxMines()
-            } else if (maxMines >= boardDimension**2) {
-                console.log(`Invalid input, the maximum amount of mines can not be greater than or eqaul to the amount of cells on the board (${boardDimension**2})!`)
+            } else if (userInput >= boardDimension**2) {
+                console.log(`Invalid input, the maximum amount of mines can not be greater than or eqaul to the amount of cells on the board (${boardDimension**2})!\n`)
                 await changeMaxMines()
             } else {
-                console.log('Invalid input, input must be a number greater than 0!')
-                await changeMinMines()
+                console.log('Invalid input, input must be a number greater than 0!\n')
+                await changeMaxMines()
             }
-        })
+        }
+        await changeMaxMines()
     }
     else if (userInput.toLowerCase() === 'change_icons'){
-        await (async function changeIcon1(){
+        async function changeIcon1(){
             let userInput = await getInput('Enter the icon to represent covered cells\n');
-            if (userInput.length() === 1){
+            if (userInput.length === 1){
                 coveredDisp = userInput
+                console.log('\nChanged the icon for covered cells to',coveredDisp,'\n')
             } else {
-                console.log('Invalid input, input must be exactly 1 character in length!')
+                console.log('Invalid input, input must be exactly 1 character in length!\n')
                 await changeIcon1()
             }
-        })
-        await (async function changeIcon2(){
+        }
+        await changeIcon1()
+        async function changeIcon2(){
             let userInput = await getInput('Enter the icon to represent uncovered cells\n');
-            if (userInput.length() === 1){
+            if (userInput.length === 1){
                 uncoveredDisp = userInput
+                console.log('\nChanged the icon for uncovered cells to',uncoveredDisp,'\n')
             } else {
-                console.log('Invalid input, input must be exactly 1 character in length!')
+                console.log('Invalid input, input must be exactly 1 character in length!\n')
                 await changeIcon2()
             }
-        })
-        await (async function changeIcon3(){
+        }
+        await changeIcon2()
+        async function changeIcon3(){
             let userInput = await getInput('Enter the icon to represent flagged cells\n');
-            if (userInput.length() === 1){
+            if (userInput.length === 1){
                 flaggedDisp = userInput
+                console.log('\nChanged the icon for flagged cells to',flaggedDisp,'\n')
             } else {
-                console.log('Invalid input, input must be exactly 1 character in length!')
+                console.log('Invalid input, input must be exactly 1 character in length!\n')
                 await changeIcon3()
             }
-        })
-        await (async function changeIcon4(){
+        }
+        await changeIcon3()
+        async function changeIcon4(){
             let userInput = await getInput('Enter the icon to represent a mine\n');
-            if (userInput.length() === 1){
+            if (userInput.length === 1){
                 mineDisp = userInput
-                await changeIcon4()
+                console.log('\nChanged the icon for mines to',mineDisp,'\n')
+                
             } else {
-                console.log('Invalid input, input must be exactly 1 character in length!')
+                console.log('Invalid input, input must be exactly 1 character in length!\n')
+                await changeIcon4()
             }
-        })
+        }
+        await changeIcon4()
         await settings()
     } else {
-        console.log('Invalid input!')
+        console.log('Invalid input!\n')
         await settings()
     }
 
@@ -392,6 +425,8 @@ async function begin(){
     }
     else if (userInput.toLowerCase() === 'settings' || userInput.toLowerCase() === 's'){
         //open the settings menu from the settings function
+        console.log('\n'.repeat(20))    //Clear console
+        console.log('|--- Game Settings ---|');
         await settings()
         await begin()
 
