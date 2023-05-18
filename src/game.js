@@ -10,7 +10,7 @@ var boardDimension = 5 //Global variable Specifing the amount of rows and column
 var gameBoard = []  //Global Variable for holding cell information
 
 //Global values for the mimimum and maximum amount of mines that can generate
-var minMines = 2 
+var minMines = 2
 var maxMines = 5
 
 //Global variables for the characters used to represent items on the board.
@@ -105,9 +105,6 @@ function countNearbyMines () {
 
 //ANCHOR Display Board
 function displayBoard(){
-    //clear space in the console beacuse console.clear() doesn't work in node
-    console.log('\n'.repeat(20)) 
-  
     //Create X axis key
     let xkey = '     1'
     for (let i = 2; i <= boardDimension; i++){
@@ -163,7 +160,7 @@ function displayBoard(){
 }
 
 //ANCHOR Check for Mine
-function checkForMine(x_input,y_input){
+async function checkForMine(x_input,y_input){ //TODO - ADD FUNCITONALITY FOR MOVING MINE IF REAVEALED ON FIRST TURN
     //locates the index of the cell that has the inputted x and y values
     arrIndex = gameBoard.map((element, index) => {
         if (element.x == x_input && element.y == y_input){
@@ -177,10 +174,7 @@ function checkForMine(x_input,y_input){
             console.log('game lost, ending game')   //TODO - LOGIC FOR BREAKING LOOP NEEDED
             gameBoard[arrIndex].display = mineDisp
         }
-    } else {
-        console.log('The value entered is outside of the game board!')  //REVIEW - This behaviour may be duplicated
-    }
-    
+    }    
 }
 
 //ANCHOR Uncover Cell
@@ -213,22 +207,24 @@ function uncoverCell(x_input,y_input){
 
 //ANCHOR Recursive Uncover
 function recursiveUncover(x,y){
+    console.log('running recursive')
     for (var i = -1; i <= 1; i++){
         for (let j = -1; j <= 1; j++){
             let arrIndex = gameBoard.map((element, index) => {
                 if (element.x == x+i && element.y == y+j){
                     return index
                 }}).filter(element => element >=0)
-            //console.log(arrIndex)                       //*for debugging
-            //console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
+            console.log(arrIndex)                       //*for debugging
+            console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
             if (Object.keys(arrIndex).length !== 0){
+                console.log('recalling uncover')
                 uncoverCell(x+i,y+j)
             }
         }
     }
 }
 //ANCHOR Toggle Flag
-function toggleFlag(x_input,y_input){
+async function toggleFlag(x_input,y_input){
     arrIndex = gameBoard.map((element, index) => {
         if (element.x == x_input && element.y == y_input){
             return index
@@ -254,7 +250,7 @@ function toggleFlag(x_input,y_input){
 }
 
 //ANCHOR Check Win Conditions
-function checkWinCondition(){
+async function checkWinCondition(){
     let gamefinished = true
     //Iterate through each cell to check if it either contains a mine or has been uncovered
     for (let i = 0; i < gameBoard.length; i++){
@@ -271,7 +267,7 @@ function checkWinCondition(){
     }
 }
 
-//ANCHOR User Input
+//ANCHOR Get User Input
 const getInput = async (prompt = '>') => {
     //Get user input through the readline module
     const rl = readline.createInterface({input,output});
@@ -415,9 +411,8 @@ async function settings(){
 async function begin(){
     console.log(`
     To begin the game, press ENTER
-    To change game settings, type 'settings' or 's'
-    To display instructions, type 'help' or 'h'\n`);
-    //Retrieve user input with getInput funciton
+    To change game settings, type 'settings' or 's'\n`);
+    //Retrieve user input with getInput function
     let userInput = await getInput();
 
     if (userInput.toLowerCase() == ''){
@@ -431,12 +426,55 @@ async function begin(){
         await begin()
 
     }
+    /*For expanding functionality in the future.  Would open a small instruction manual
     else if (userInput.toLowerCase() === 'help' || userInput.toLowerCase() === 'h'){
         console.log('displaying help')  //*for debugging
-    } else {
+    }*/ 
+    else {
+        //error trapping
         console.log('\nInvalid input!')
         await begin()
     }
+}
+
+//ANCHOR Select Action
+async function selectAction(){
+    async function getX(){
+        let userInput = await getInput('Enter x coordinate:\n')
+        if (userInput > 0){
+            return userInput
+        } else {
+            console.log("Invalid input!  Input must be a number greater than 0")
+            await getX()
+        }
+    }
+    let x = await getX()
+    async function getY(){
+        let userInput = await getInput('Enter y coordinate:\n')
+        if (userInput > 0){
+            return userInput
+        } else {
+            console.log("Invalid input!  Input must be a number greater than 0")
+            await getY()
+        }
+    }
+    let y = await getY()
+    async function getAction(){
+        let userInput = await getInput('Select an Action\n')
+        if (userInput.toLowerCase() == 'flag' || userInput.toLowerCase() == 'f'){
+            toggleFlag(y,x)
+        }
+        else if (userInput.toLowerCase() == 'uncover' || userInput.toLowerCase() == 'u'){
+            uncoverCell(y,x)
+        } else {
+            console.log(`Invalid input!  Valid inputs are:
+            'flag'     - places/removes flag
+            'f'        - places/removes flag
+            'uncover'  - reveals a tile
+            'u'        - reveals a tile`)
+        }
+    }
+    await getAction(x,y)
 }
 
 //ANCHOR Root Loop
@@ -447,17 +485,20 @@ async function root (){
     gameBoard = initialiseBoard();
     placeMines();
     countNearbyMines();
-    console.log('welcome stuff');    //TODO - ADD WELCOME LOGIC, COMMANDS, CUSTOMISATION
-    
+    //clear space in the console beacuse console.clear() doesn't work in node
+    console.log('\n'.repeat(20)) 
+    console.log(`Welcome to minesweeper.\n
+    To play, start by slecting the x and y coordinates of the tile you want to interact with.
+    Once you have selected a tile, You can type 'flag' or 'f' to place or remove a marker flag, 
+    or you can type 'uncover' or 'u' to reveal the tile.\n\n`);
+
     //ANCHOR Gameplay loop
     gameplay: while (true){
         displayBoard();     //TODO - ADD USER INPUT HERE
         //console.log(gameBoard)    //*for debugging
-        console.log('input stuff here');
-        //uncoverCell(x,y)
-        //toggleFlag(x,y)
-        //checkWinCondition()
-        break
+        await selectAction()
+        await checkWinCondition()
+        console.log('\n'.repeat(20)) 
     }
     //TODO - ADD END GAME LOGIC
 }
