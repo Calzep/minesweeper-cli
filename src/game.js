@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game
-version A.3, 16/05/2023
+version 1, 18/05/2023
 Caleb Eason*/
 
 //ANCHOR Packages, Variables and Constants
@@ -108,8 +108,13 @@ function displayBoard(){
 
     //Create X axis key
     let xkey = '     1'
-    for (let i = 2; i <= boardDimension; i++){
+    for (let i = 2; i <= boardDimension && i <10; i++){
         xkey += `   ${i}`
+    }
+    
+    //When the value of I reaches 2 digits, the indentation between each number needs to be reduced
+    for (let i = 10; i <= boardDimension; i++){
+        xkey += `  ${i}`
     }
     console.log(xkey)
   
@@ -124,7 +129,7 @@ function displayBoard(){
     console.log(startRow)
   
     //Create each row of the grid and y axis key
-    for (let i = 1; i < boardDimension; i++){
+    for (let i = 1; i < boardDimension && i < 10; i++){
   
         //Create the left and right cell boarders
         let middleRow1 = ` ${i} ║ ${gameBoard[(i-1)*boardDimension].display} `
@@ -142,9 +147,35 @@ function displayBoard(){
         middleRow2 += '╣'
         console.log(middleRow2)
     }
+
+    //Once i reaches double digits the indentation needs to be changed
+    for (let i = 10; i < boardDimension; i++){
+  
+        //Create the left and right cell boarders
+        let middleRow1 = `${i} ║ ${gameBoard[(i-1)*boardDimension].display} `
+        for (let j = 1; j < boardDimension; j++){
+            middleRow1 += `║ ${gameBoard[j+(i-1)*boardDimension].display} `
+        }
+        middleRow1 += '║'
+        console.log(middleRow1)
+  
+        //create the top boarder of the next row        
+        let middleRow2 = '   ╠═══'
+        for (let j = 1; j < boardDimension; j++){
+            middleRow2 += '╬═══'
+        }
+        middleRow2 += '╣'
+        console.log(middleRow2)
+    }
   
     //Create the left and right cell boarders of the final row
-    let endRow1 = ` ${boardDimension} ║ ${gameBoard[(boardDimension**2-boardDimension)].display} `
+let endRow1
+    if (boardDimension < 10){
+        endRow1 = ` ${boardDimension} ║ ${gameBoard[(boardDimension**2-boardDimension)].display} `
+    } else {
+        //if the board size is over 2 digits the indentation needs to be modified
+        endRow1 = `${boardDimension} ║ ${gameBoard[(boardDimension**2-boardDimension)].display} `
+    }
     for (let i = 1; i < boardDimension; i++){
         endRow1 += `║ ${gameBoard[(boardDimension**2-boardDimension)+i].display} `
     }
@@ -303,18 +334,22 @@ function settings(){
     else if (userInput.toLowerCase() === 'change_size'){
         function changeSize(){
             let userInput = readlineSync.question("Enter the new board dimension\n");
-            if (userInput > 0 && userInput**2 >maxMines){
+            if (userInput > 0 && userInput**2 >maxMines && userInput < 100){
                 boardDimension = userInput
                 console.log('\nChanged the board size to',boardDimension)
                 settings()
             }
-            else if (userInput**2 <= maxMines){
+            else if (userInput**2 <= maxMines && userInput.length > 0){
                 boardDimension = userInput
                 console.log(`\nChanged the board size to ${boardDimension}
 
                 Warning: the game board is now too small to accomodate the current mine count settings!
                 To continue, you will need to reduce the mine count!`)
                 settings()
+            }
+            else if (userInput >= 100){
+                console.log("Come on, you're not solving a board that big.  Enter a smaller size.\n")
+                changeSize()
             }else {
                 console.log('\nInvalid input, input must be a number greater than 0!\n')
                 changeSize()
