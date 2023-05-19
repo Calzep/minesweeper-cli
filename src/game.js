@@ -39,36 +39,33 @@ function initialiseBoard(){
 function placeMines(){
     //Randomly calculate how any mines to place on the board
     let mineCount = Math.floor(Math.random() * (maxMines - minMines + 1)) + minMines
-    //console.log('mineCount:',mineCount) //*for debugging
+    console.log('mineCount:',mineCount) //*for debugging
 
+    //JS is weird, without .slice() aparently both varibles share the same source
+    let tempBoard = gameBoard.slice(0)
     //place mines on the board, iterates through the loop for each mines that needs to be placed
     for (let i = 0; i < mineCount; i++){
         //Loop to prevent placing multiple mines in the same cell
-        while (true) {
-            //generate a random x and y coordinate within range of the game board
-            let x_candidate = Math.floor(Math.random() * (boardDimension)) + 1
-            let y_candidate = Math.floor(Math.random() * (boardDimension)) + 1
-            //console.log('x and y candidate:',x_candidate,y_candidate) //*for debugging
-            
-            /*find the index of an object whose x and y values match those of x_candidate and y_candidate.
+        
+        let tempIndex = Math.floor(Math.random() * (tempBoard.length))
+        //console.log(tempBoard,tempIndex)
+        //console.log(index) //*for debugging
+          
+        /*find the index of an object whose x and y values match those the selected index in the temporary board.
 
-            maps the property values for each object in the list into an array, then iterates over the list, checking
-            if the values of x and y match x_candidate and y_candidate.  When a match is found, the index of the 
-            matching object is returned, otherwise undefined is returned.  The filter funciton removes the undefined values*/
-            arrIndex = gameBoard.map((element, index) => {
-                if (element.x == x_candidate && element.y == y_candidate){
-                    return index
-                }}).filter(element => element >=0)
-            //console.log('matched cell',gameBoard[arrIndex],'\n')   //*for debugging
-
-            //Checks if the matched cell contains a mine.  If it doesn't, a mine is placed and the loop is broken
-            //if there is already a mine present, the loop repeats and a new set of coordinates are generated
-            if (gameBoard[arrIndex].containsMine == false){
-                gameBoard[arrIndex].containsMine = true
-                //console.log('loop broken, cell value:',gameBoard[arrIndex],'\n') //*for debugging
-                break
-            }
-        }
+        maps the property values for each object in the list into an array, then iterates over the list, checking
+        if the values of x and y match x_candidate and y_candidate.  When a match is found, the index of the 
+        matching object is returned, otherwise undefined is returned.  The filter funciton removes the undefined values*/
+        arrIndex = gameBoard.map((element, index) => {
+        if (element.x == tempBoard[tempIndex].x && element.y == tempBoard[tempIndex].y){
+            return index
+        }}).filter(element => element >=0)
+        //console.log('matched cell',gameBoard[arrIndex],'\n')   //*for debugging
+        console.log(arrIndex)
+        gameBoard[arrIndex].containsMine = true
+        tempBoard.splice(tempIndex, 1)
+        //console.log('tempboard',tempBoard)
+        //console.log('gameboard',gameBoard)
     }
 }
 
@@ -527,7 +524,7 @@ function root (){
     gameBoard = initialiseBoard();
     placeMines();
     countNearbyMines();
-    //console.log(gameBoard)  //*for debugging
+    console.log(gameBoard)  //*for debugging
     //clear space in the console beacuse console.clear() doesn't work in node
     console.log('\n'.repeat(20))
     console.log(`Welcome to minesweeper.\n
