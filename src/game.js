@@ -1,5 +1,5 @@
 /* SDV503 Minesweeper game
-version 1, 18/05/2023
+version 1.1, 19/05/2023
 Caleb Eason*/
 
 //ANCHOR Packages, Variables and Constants
