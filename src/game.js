@@ -30,8 +30,7 @@ function initialiseBoard(){
             //Creates an object for each cell in the grid
             //x and y refer to the graphical position of each cell, state can be 'covered', 'uncovered' or flagged'
             gameBoard.push({x:i+1,y:j+1,containsMine:false,state:'covered',minesNearby:0,display:coveredDisp})
-        }
-    }
+    }}
     return gameBoard
 }
 
@@ -39,41 +38,38 @@ function initialiseBoard(){
 function placeMines(){
     //Randomly calculate how any mines to place on the board
     let mineCount = Math.floor(Math.random() * (maxMines - minMines + 1)) + minMines
-    console.log('mineCount:',mineCount) //*for debugging
+    //console.log('mineCount:',mineCount) //*for debugging
 
-    //JS is weird, without .slice() aparently both varibles share the same source
-    let tempBoard = gameBoard.slice(0)
+    //Create a duplicate of the game board
+    let tempBoard = gameBoard.slice(0)  //JS is weird, without .slice() aparently both varibles share the same source
+
     //place mines on the board, iterates through the loop for each mines that needs to be placed
     for (let i = 0; i < mineCount; i++){
-        //Loop to prevent placing multiple mines in the same cell
-        
+        //pick a random index from the duplicate gameboard
         let tempIndex = Math.floor(Math.random() * (tempBoard.length))
-        //console.log(tempBoard,tempIndex)
-        //console.log(index) //*for debugging
+        //console.log(tempBoard,tempIndex)  //*for debugging
           
-        /*find the index of an object whose x and y values match those the selected index in the temporary board.
-
-        maps the property values for each object in the list into an array, then iterates over the list, checking
-        if the values of x and y match x_candidate and y_candidate.  When a match is found, the index of the 
-        matching object is returned, otherwise undefined is returned.  The filter funciton removes the undefined values*/
+        /*finds the index of the object in gameBoard that matches the x and y coordinates of the randomly selected 
+        index in the duplicate gameboard.
+        Maps the property values for each object in the list into an array, then iterates over the array, checking
+        if the values of x and y match those from the duplicate board.  When a match is found, the index of the 
+        matching object is returned,  The filter funciton removes the undefined values*/
         arrIndex = gameBoard.map((element, index) => {
         if (element.x == tempBoard[tempIndex].x && element.y == tempBoard[tempIndex].y){
             return index
         }}).filter(element => element >=0)
         //console.log('matched cell',gameBoard[arrIndex],'\n')   //*for debugging
-        console.log(arrIndex)
         gameBoard[arrIndex].containsMine = true
         tempBoard.splice(tempIndex, 1)
-        //console.log('tempboard',tempBoard)
+        //console.log('tempboard',tempBoard)    //*for debugging
         //console.log('gameboard',gameBoard)
-    }
-}
+}}
 
 //ANCHOR Count Nearby Mines
 function countNearbyMines () {
     //Iterate over each cell in the board
     for (let i = 0; i < gameBoard.length; i++){
-        let nearbyMines = 0         // Counter to keep track of mines
+        let nearbyMines = 0         //Counter to keep track of mines
         let cx = gameBoard[i].x     //coords for current cell, c stands for current
         let cy = gameBoard[i].y
         //console.log('x,y:',cx,cy)   //*for debugging
@@ -85,18 +81,17 @@ function countNearbyMines () {
                         return index
                     }}).filter(element => element >=0)
                 //console.log(arrIndex)                       //*for debugging
-                //console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
+                //console.log(gameBoard[arrIndex],'\n\n')
+                //Test if the object is not null, as running this code for cells on the edge of the board will return
+                //undefinde values when the for loop tries to select a non existant adjacent cell.
                 if (Object.keys(arrIndex).length !== 0){
+                    //If the cell contains a mine, increase the value of nearbyMines
                     if (gameBoard[arrIndex].containsMine == true){
                         nearbyMines++
-                    }
-                }
-            }
-        }
+        }}}}
         //console.log(nearbyMines)    //*for debugging
         gameBoard[i].minesNearby = nearbyMines
-    }
-}
+}}
 
 //ANCHOR Display Board
 function displayBoard(){
@@ -105,11 +100,13 @@ function displayBoard(){
 
     //Create X axis key
     let xkey = '     1'
+    //for each column, concat a new string to display the value of i (column number)
     for (let i = 2; i <= boardDimension && i <10; i++){
         xkey += `   ${i}`
     }
     
     //When the value of I reaches 2 digits, the indentation between each number needs to be reduced
+    //Will only run if the boardDimension is > 10
     for (let i = 10; i <= boardDimension; i++){
         xkey += `  ${i}`
     }
@@ -165,7 +162,7 @@ function displayBoard(){
         console.log(middleRow2)
     }
   
-    //Create the left and right cell boarders of the final row
+//Create the left and right cell boarders of the final row
 let endRow1
     if (boardDimension < 10){
         endRow1 = ` ${boardDimension} ║ ${gameBoard[(boardDimension**2-boardDimension)].display} `
@@ -197,10 +194,16 @@ function checkForMine(x_input,y_input){
         }}).filter(element => element >=0)
     
     //check if the returned result is not undefined, 
-    //if true return the value of contains mine for the selected cell
+    //if true, return the value of contains mine for the selected cell
     if (Object.keys(arrIndex).length !== 0){
+        //Test if the cell contains a mine
         if (gameBoard[arrIndex].containsMine === true){
+            //If the player hits a mine on the first turn, the mine should be relocated.
+            //The variable gameState determins if it is the first turn or not
             if (gameState == 'start'){
+                //Remove the mine form the cell and run the place mine funciton setting the mine count to 1
+                //Change the uncovered cell back to covered and rerun the uncover cell function.
+                //If the placemine function chooses the same place to replace the mine, this will just run again.
                 gameBoard[arrIndex].containsMine = false
                 minMines = 1
                 maxMines = 1
@@ -209,28 +212,29 @@ function checkForMine(x_input,y_input){
                 placeMines()
                 uncoverCell(x_input,y_input)
             } else {
+                //If it is not the first turn, change gameState to 'loss' which will end the game
                 gameBoard[arrIndex].display = mineDisp
                 gameState = 'loss'
                 displayBoard();
-            }
-        }
-    }    
-}
+}}}}
 
 //ANCHOR Uncover Cell
 function uncoverCell(x_input,y_input){
+    //Find the index in gameboard which matches input
     arrIndex = gameBoard.map((element, index) => {
         if (element.x == x_input && element.y == y_input){
             return index
         }}).filter(element => element >=0)
 
     //check if the returned result is not undefined, 
-    //if true continue to place flag
     if (Object.keys(arrIndex).length !== 0){
-        //check the stae of the cell, toggle between covered and flagged
-        //if the state is uncovered, then input will do nothing
+        //check the state of the cell, if 'covered', set to 'uncovered'
+        //if the state 'flagged' or 'uncovered', nothing happens
         if(gameBoard[arrIndex].state === 'covered'){
             gameBoard[arrIndex].state = 'uncovered'
+            //When a cell is ucovered check if their are mines nearby.
+            //If true display the nearby mine count on the unncoverd cell,
+            //otherwise, display the empty cell icon and run recursive uncover
             if (gameBoard[arrIndex].minesNearby > 0){
                 gameBoard[arrIndex].display = gameBoard[arrIndex].minesNearby
             } else {
@@ -247,8 +251,11 @@ function uncoverCell(x_input,y_input){
 }
 
 //ANCHOR Recursive Uncover
+//Triggerd if an empty cell is uncovered
 function recursiveUncover(x,y){
     //console.log('running recursive')    //*for debugging
+    //Uses a for loop to run uncover cell on all adjacent cells
+    //uncoverCell and recursiveUncover will recursively call each other until no more empty cells are uncovered
     for (var i = -1; i <= 1; i++){
         for (let j = -1; j <= 1; j++){
             let arrIndex = gameBoard.map((element, index) => {
@@ -257,14 +264,15 @@ function recursiveUncover(x,y){
                 }}).filter(element => element >=0)
             //console.log(arrIndex)                       //*for debugging
             //console.log(gameBoard[arrIndex],'\n\n')     //*for debugging
+            //Test if the index is not null, as running this code for cells on the edge of the board will return
+            //undefinde values when the for loop tries to select a non existant adjacent cell.
             if (Object.keys(arrIndex).length !== 0){
                 uncoverCell(x+i,y+j)
-            }
-        }
-    }
-}
+}}}}
+
 //ANCHOR Toggle Flag
 function toggleFlag(x_input,y_input){
+    //find the matching index in gameBoard
     arrIndex = gameBoard.map((element, index) => {
         if (element.x == x_input && element.y == y_input){
             return index
@@ -311,12 +319,14 @@ function checkWinCondition(){
 
 //ANCHOR Game Settings
 function settings(){
+    //A text based command system, most of this code is self explanatory input and validation so commenting will be light
     console.log(`
     To change the board size, type 'change_size'
     To change the amount of mines on the board, type 'change_mine_count'
     To customise the game's iconography, type 'change_icons'
     
     To exit this menu, type 'exit' or 'e'`);
+    //Retrieve user input with syncronous readline module
     let userInput = readlineSync.question(">")
     
     if (userInput.toLowerCase() === 'exit' || userInput.toLowerCase() === 'e'){
@@ -440,7 +450,6 @@ function settings(){
         console.log('Invalid input!\n')
         settings()
     }
-
 }
 
 //ANCHOR Begin Game
@@ -448,7 +457,7 @@ function begin(){
     console.log(`
     To begin the game, press ENTER
     To change game settings, type 'settings' or 's'\n`);
-    //Retrieve user input with getInput function
+    //Retrieve user input with syncronous readline module
     let userInput = readlineSync.question('>')
 
     if (userInput.toLowerCase() == ''){
@@ -460,11 +469,10 @@ function begin(){
         console.log('|--- Game Settings ---|');
         settings()
         begin()
-
     }
-    /*For expanding functionality in the future.  Would open a small instruction manual
+    /*//For expanding functionality in the future.  Would open a small instruction manual
     else if (userInput.toLowerCase() === 'help' || userInput.toLowerCase() === 'h'){
-        console.log('displaying help')  //*for debugging
+        console.log('displaying help')
     }*/ 
     else {
         //error trapping
@@ -475,6 +483,7 @@ function begin(){
 
 //ANCHOR Select Action
 function selectAction(){
+    //Get X coordinate from user
     function getX(){
         let userInput = readlineSync.question('Enter x coordinate:  ')
         if (userInput > 0){
@@ -485,6 +494,7 @@ function selectAction(){
         }
     }
     let x = Number(getX())
+    //Get Y coordinate from user
     function getY(){
         let userInput = readlineSync.question('Enter y coordinate:  ')
         if (userInput > 0){
@@ -495,6 +505,7 @@ function selectAction(){
         }
     }
     let y = Number(getY())
+    //Get Action from user (flag/uncover)
     function getAction(){
         let userInput = readlineSync.question('Select an Action:  ')
         if (userInput.toLowerCase() == 'flag' || userInput.toLowerCase() == 'f'){
@@ -517,27 +528,29 @@ function selectAction(){
 //ANCHOR Root Loop
 function root (){
     //ANCHOR Initialisation
-    console.log('\n\nWelcome to Minesweeper');
+    console.log('\n\nWelcome to Minesweeper')
+    //Set the gameState to start, ensures the user cannot fail on the first turn (see checkForMine function)
     gameState = 'start'
-    begin();
+    begin();    //Opens the main menu, allowing the user to change settins
     gameBoard = []
-    gameBoard = initialiseBoard();
-    placeMines();
-    countNearbyMines();
-    console.log(gameBoard)  //*for debugging
-    //clear space in the console beacuse console.clear() doesn't work in node
-    console.log('\n'.repeat(20))
+    gameBoard = initialiseBoard()  //Creates a new game board
+    placeMines();                   //Randomly place mines on the board
+    countNearbyMines();             //Counts adjacent cells for all mines and stores in gameBoard
+    //console.log(gameBoard)        //*for debugging
+    console.log('\n'.repeat(20))    //clear space in the console beacuse console.clear() doesn't work in node
     console.log(`Welcome to minesweeper.\n
     To play, start by slecting the x and y coordinates of the tile you want to interact with.
     Once you have selected a tile, You can type 'flag' or 'f' to place or remove a marker flag, 
-    or you can type 'uncover' or 'u' to reveal the tile.\n\n`);
+    or you can type 'uncover' or 'u' to reveal the tile.\n\n`)
     readlineSync.question('press ENTER to conintue\n>')
+
     //ANCHOR Gameplay loop
     while (true){
-        displayBoard();
+        displayBoard()              //Updates the visual display each turn
         //console.log(gameBoard)    //*for debugging
-        selectAction()
-        checkWinCondition()
+        selectAction()              //Gets user input each turn
+        checkWinCondition()         //Checks if the game is complete
+        //Checks if the user has won or lost and ends the game if so
         if (gameState == 'win'){
             console.log('\nYou win!  Congratulations!\n')
             break
@@ -546,14 +559,17 @@ function root (){
             console.log('\nYou lose!  You detonated a mine!\n')
             break
         }
+        //upadtes the game state to remove the first turn invincibility (see checkForMine function)
         gameState = 'ongoing'
     }
+    //Once the loop is broken asks if the user wants to replay and either recalls root or ends
     function playAgain(){
         replay = readlineSync.question('Would you like to play again? [y/n]\n>')
         if (replay.toLowerCase() == 'y' || replay.toLowerCase() == 'yes'){
             root()
         }
         else if (replay.toLowerCase() == 'n' || replay.toLowerCase() == 'no'){}
+        //error trapping
         else {
             console.log(`Invalid input!  Enter either 'y', 'yes','n' or 'no'`)
         }
