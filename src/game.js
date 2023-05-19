@@ -44,7 +44,7 @@ function placeMines(){
     //place mines on the board, iterates through the loop for each mines that needs to be placed
     for (let i = 0; i < mineCount; i++){
         //Loop to prevent placing multiple mines in the same cell
-        while (true) {  //REVIEW - THIS IS INNEFICIENT AND CAN LAST FORWEVER ON LARGER BAORDS
+        while (true) {  //REVIEW - THIS IS INNEFICIENT AND CAN LAST FORWEVER ON LARGER BOARDS
             //generate a random x and y coordinate within range of the game board
             let x_candidate = Math.floor(Math.random() * (boardDimension)) + 1
             let y_candidate = Math.floor(Math.random() * (boardDimension)) + 1
