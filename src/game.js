@@ -13,7 +13,7 @@ var gameState   //Variable for holding the current game state.  Can be 'start', 
 
 var boardDimension = 3 //Global variable Specifing the amount of rows and columns in the board
 var gameBoard = []  //Global Variable for holding cell information
-var minMines = 2    //Global values for the mimimum and maximum amount of mines that can generate
+var minMines = 2   //Global values for the mimimum and maximum amount of mines that can generate
 var maxMines = 5
 
 //Global variables for the characters used to represent items on the board.
@@ -298,6 +298,7 @@ function toggleFlag(x_input,y_input){
     } else {
         //error trapping
         console.log('The value entered is outside of the game board!')
+        readlineSync.question('Press ENTER to conintue\n>')
     }
 }
 
@@ -576,6 +577,7 @@ function root (){
         //error trapping
         else {
             console.log(`Invalid input!  Enter either 'y', 'yes','n' or 'no'`)
+            playAgain()
         }
     }
     playAgain()
