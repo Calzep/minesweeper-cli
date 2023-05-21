@@ -11,7 +11,7 @@ var readlineSync = require('readline-sync');
 
 var gameState   //Variable for holding the current game state.  Can be 'start', 'ongoing', 'win' or 'loss'
 
-var boardDimension = 5 //Global variable Specifing the amount of rows and columns in the board
+var boardDimension = 3 //Global variable Specifing the amount of rows and columns in the board
 var gameBoard = []  //Global Variable for holding cell information
 var minMines = 2    //Global values for the mimimum and maximum amount of mines that can generate
 var maxMines = 5
@@ -57,7 +57,7 @@ function placeMines(){
         index in the duplicate gameboard.
         Maps the property values for each object in the list into an array, then iterates over the array, checking
         if the values of x and y match those from the duplicate board.  When a match is found, the index of the 
-        matching object is returned,  The filter funciton removes the undefined values*/
+        matching object is returned,  The filter function removes the undefined values*/
         arrIndex = gameBoard.map((element, index) => {
         if (element.x == tempBoard[tempIndex].x && element.y == tempBoard[tempIndex].y){
             return index
@@ -87,7 +87,7 @@ function countNearbyMines () {
                 //console.log(arrIndex)                       //*for debugging
                 //console.log(gameBoard[arrIndex],'\n\n')
                 //Test if the object is not null, as running this code for cells on the edge of the board will return
-                //undefinde values when the for loop tries to select a non existant adjacent cell.
+                //undefined values when the for loop tries to select a non existant adjacent cell.
                 if (Object.keys(arrIndex).length !== 0){
                     //If the cell contains a mine, increase the value of nearbyMines
                     if (gameBoard[arrIndex].containsMine == true){
@@ -205,7 +205,7 @@ function checkForMine(x_input,y_input){
             //If the player hits a mine on the first turn, the mine should be relocated.
             //The variable gameState determins if it is the first turn or not
             if (gameState == 'start'){
-                //Remove the mine form the cell and run the place mine funciton setting the mine count to 1
+                //Remove the mine form the cell and run the place mine function setting the mine count to 1
                 //Change the uncovered cell back to covered and rerun the uncover cell function.
                 //If the placemine function chooses the same place to replace the mine, this will just run again.
                 gameBoard[arrIndex].containsMine = false
