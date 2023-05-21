@@ -1,6 +1,10 @@
 /* SDV503 Minesweeper game
 version 1.1, 19/05/2023
-Caleb Eason*/
+Caleb Eason
+
+THIS PROGRAM IS DEPENDANT ON THE SYNCRONOUS READLINE MOUDLE
+The module has been included in the node_modules file.  To install, use 'npm install'.
+If this doesn't work visit 'https://www.npmjs.com/package/readline-sync' to install manually*/
 
 //ANCHOR Packages, Variables and Constants
 var readlineSync = require('readline-sync');
